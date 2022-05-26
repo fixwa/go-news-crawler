@@ -1,10 +1,21 @@
 package main
 
-import "github.com/fixwa/go-news-crawler/crawlers"
+import (
+	"github.com/fixwa/go-news-crawler/crawlers"
+	"sync"
+)
 
 func main() {
-	//crawlers.CrawlInfobae()
+	var waiter sync.WaitGroup
 
-	//crawlers.CrawlLaNacion()
-	crawlers.CrawlClarin()
+	waiter.Add(1)
+	go crawlers.CrawlInfobae(&waiter)
+
+	waiter.Add(1)
+	go crawlers.CrawlLaNacion(&waiter)
+
+	waiter.Add(1)
+	go crawlers.CrawlClarin(&waiter)
+
+	waiter.Wait()
 }

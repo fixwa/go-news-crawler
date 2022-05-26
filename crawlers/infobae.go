@@ -6,6 +6,7 @@ import (
 	"github.com/gocolly/colly/queue"
 	"log"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -22,7 +23,7 @@ func init() {
 	}
 }
 
-func CrawlInfobae() {
+func CrawlInfobae(w *sync.WaitGroup) {
 	log.Println("crawl infobae.com")
 
 	c := colly.NewCollector(
@@ -87,6 +88,7 @@ func CrawlInfobae() {
 	// Consume
 	q.Run(c)
 	log.Println("Finished infobae.com")
+	w.Done()
 }
 
 // ConvertInfobaeDate @todo this is exported to allow testing (make private).

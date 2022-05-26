@@ -5,6 +5,7 @@ import (
 	"github.com/gocolly/colly"
 	"github.com/gocolly/colly/queue"
 	"log"
+	"sync"
 	"time"
 )
 
@@ -21,7 +22,7 @@ func init() {
 	}
 }
 
-func CrawlClarin() {
+func CrawlClarin(w *sync.WaitGroup) {
 	log.Println("crawl clarin.com")
 
 	c := colly.NewCollector(
@@ -75,4 +76,5 @@ func CrawlClarin() {
 	q.Run(c)
 
 	log.Println("Finished clarin.com")
+	w.Done()
 }
