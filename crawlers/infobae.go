@@ -10,25 +10,21 @@ import (
 )
 
 var (
-	articleUrls map[string]bool
+	infobaeArticles map[string]bool
 )
 
 func init() {
 	existingLinks := models.GetArticlesBySource(models.Infobae)
-	articleUrls = map[string]bool{}
+	infobaeArticles = map[string]bool{}
 
 	for _, link := range existingLinks {
-		articleUrls[link] = true
+		infobaeArticles[link] = true
 	}
 }
 
 func CrawlInfobae() {
 	log.Println("crawl infobae.com")
-	const (
-		datetimeFormat = "Jan 02, 2006 03:04PM"
-	)
 
-	// Instantiate the collector
 	c := colly.NewCollector(
 		colly.AllowedDomains("www.infobae.com"),
 	)
@@ -41,19 +37,16 @@ func CrawlInfobae() {
 	detailCollector := c.Clone()
 
 	c.OnHTML(".page-container", func(e *colly.HTMLElement) {
-
 		e.ForEach("a.nd-feed-list-card", func(_ int, el *colly.HTMLElement) {
 			link := el.Attr("href")
-			//link := el.ChildAttr("a.title", "href")
 			if strings.Index(link, "/2022/") == -1 {
 				return
 			}
 
 			link = "https://www.infobae.com" + link
-			// start scaping the page under the link found if not scraped before
-			if _, found := articleUrls[link]; !found {
+			if _, found := infobaeArticles[link]; !found {
 				detailCollector.Visit(link)
-				articleUrls[link] = true
+				infobaeArticles[link] = true
 			}
 		})
 	})
@@ -72,7 +65,7 @@ func CrawlInfobae() {
 
 		loc, err := time.LoadLocation("America/Cordoba")
 		if err == nil {
-			if t, err := time.ParseInLocation(datetimeFormat, ConvertInfobaeDate(date), loc); err == nil {
+			if t, err := time.ParseInLocation("Feb 02, 2022 02:20PM", ConvertInfobaeDate(date), loc); err == nil {
 				publishedAt = t
 			}
 		}

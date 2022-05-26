@@ -6,7 +6,9 @@ import (
 )
 
 const (
-	Infobae = 1
+	Infobae  = 1
+	LaNacion = 2
+	Clarin   = 3
 )
 
 type Article struct {
@@ -24,7 +26,9 @@ var NewsSources map[int]string
 
 func init() {
 	NewsSources = map[int]string{
-		Infobae: "Infobae.com",
+		Infobae:  "infobae.com",
+		LaNacion: "lanacion.com.ar",
+		Clarin:   "clarin.com",
 	}
 }
 
